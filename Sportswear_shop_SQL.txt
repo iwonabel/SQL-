@@ -1,0 +1,473 @@
+-- 1. Stwórz Bazę „Sklep odzieżowy”
+
+CREATE DATABASE IF NOT EXISTS Sklep_odziezowy_IB;
+USE Sklep_odziezowy_IB;
+
+-- 2. Utwórz tabelę „Dostawca”
+
+CREATE TABLE Dostawca(
+    Id_producenta INT 		NOT NULL,
+    Nazwa_producenta VARCHAR(20) 	NOT NULL,
+    Adres_producenta VARCHAR(30) 	NOT NULL,
+    Nip_producenta VARCHAR(16) 	NOT NULL,
+    Data_podpisania_umowy_z_producentem DATE 	NOT NULL,
+    PRIMARY KEY(Id_producenta),
+    UNIQUE(Nazwa_producenta)
+);
+
+-- 3. Utwórz tabelę „Produkt”. W tej tabeli dodalam kolumne "id_producenta", w celu zalozenia foreign key z tabela Dostawca.
+
+CREATE TABLE Produkt(
+    id_produktu INT 		NOT NULL,
+    id_producenta INT 		NULL,
+    nazwa_producenta VARCHAR(20) 	NOT NULL,
+    nazwa_produktu VARCHAR(50) 	NOT NULL,
+    opis_produktu TEXT 		NOT NULL,
+    cena_netto_zakupu DECIMAL 	NOT NULL,
+    cena_brutto_zakupu DECIMAL 	NOT NULL,
+    cena_netto_sprzedazy DECIMAL 	NOT NULL,
+    cena_brutto_sprzedazy DECIMAL NOT NULL,
+    procent_VAT_sprzedazy INT 	NOT NULL,
+    PRIMARY KEY(id_produktu),
+    FOREIGN KEY(id_producenta) REFERENCES Dostawca(Id_producenta) ON DELETE CASCADE
+);
+
+-- 4. Utwórz tabelę „Zamówienie”
+
+CREATE TABLE Zamowienie (
+   Id_zamowienia INT             	NOT NULL,
+   Id_klienta    VARCHAR(50)     	NOT NULL,
+   Id_produktu   INT     		NOT NULL,
+   Data_zamowienia DATE          	NOT NULL,
+   FOREIGN KEY (Id_produktu)  REFERENCES  Produkt (id_produktu)    ON DELETE CASCADE,
+   PRIMARY KEY (Id_zamowienia, Id_klienta)
+); 
+
+-- 5. Utwórz tabelę „Klient” 
+
+CREATE TABLE Klient(
+    Id_klienta 	VARCHAR(50) 	NOT NULL,
+    Id_zamowienia INT 		NOT NULL,
+    Imie 	TEXT 		NOT NULL,
+    Nazwisko 	TEXT 		NOT NULL,
+    Adres 	VARCHAR(50) 	NOT NULL,
+    FOREIGN KEY(Id_zamowienia) REFERENCES Zamowienie(Id_zamowienia) ON DELETE CASCADE,
+    PRIMARY KEY(Id_zamowienia)
+);
+
+-- 6. Każdą tabelę uzupełnij danymi wg:
+
+-- Tabela „Dostawca” – 4 pozycje
+
+INSERT INTO Dostawca(
+    id_producenta,
+    Nazwa_producenta,
+    Adres_producenta,
+    Nip_producenta,
+    Data_podpisania_umowy_z_producentem
+)
+VALUES(1, 'Adidas', 'Clayallee 1, Berlin', '123-456-78', '2020-05-10'), (2, 'Nike', 'Bergmanstrasse 17, Berlin', '222-444-80', '2020-06-15'), (3, 'Salomon', 'Unter den Linden 3, Berlin', '555-679-10', '2020-09-07'), (4, 'Columbia', 'Munzigstrasse 49, Berlin', '451-703-04', '2021-01-31');
+
+--Tabela "Produkt" - 20 pozycji
+
+INSERT INTO Produkt(
+    id_produktu,
+    id_producenta,
+    Nazwa_producenta,
+    Nazwa_produktu,
+    Opis_produktu,
+    Cena_netto_zakupu,
+    Cena_brutto_zakupu,
+    Cena_netto_sprzedazy,
+    Cena_brutto_sprzedazy,
+    Procent_VAT_sprzedazy
+)
+VALUES(
+    1,
+    1,
+    'Adidas',
+    'Kurtka',
+    'Przeciwdeszczowa kurtka z kapturem',
+    '300',
+    '379',
+    '400',
+    '479',
+    '13'
+),(
+    2,
+    1,
+    'Adidas',
+    'Spodnie',
+    'Spodnie trekkingowe z kieszeniami',
+    '170',
+    '210',
+    '270',
+    '312',
+    '7'
+),(
+    3,
+    2,
+    'Nike',
+    'T-Shirt',
+    'Czerwony T-Shirt z krotkim rekawem',
+    '100',
+    '165',
+    '200',
+    '220',
+    '11'
+),(
+    4,
+    2,
+    'Nike',
+    'Skapetki',
+    'Biale skarpetki',
+    '10',
+    '15',
+    '20',
+    '22',
+    '5'
+),(
+    5,
+    2,
+    'Nike',
+    'Czapka',
+    'Zielona czapka zimowa',
+    '30',
+    '42',
+    '50',
+    '66',
+    '8'
+),(
+    6,
+    1,
+    'Adidas',
+    'Buty',
+    'Buty do biegania',
+    '300',
+    '320',
+    '400',
+    '499',
+    '20'
+),(
+    7,
+    3,
+    'Salomon',
+    'Buty',
+    'Buty trekkingowe',
+    '300',
+    '400',
+    '450',
+    '499',
+    '21'
+),(
+    8,
+    3,
+    'Salomon',
+    'Bluza',
+    'Bluza rozpinana z kapturem',
+    '170',
+    '219',
+    '225',
+    '249',
+    '6'
+),(
+    9,
+    3,
+    'Salomon',
+    'Rekawice',
+    'Rekawie narciarskie',
+    '200',
+    '225',
+    '260',
+    '279',
+    '5'
+),(
+    10,
+    3,
+    'Salomon',
+    'Szalik',
+    'Szalik welniany zimowy',
+    '150',
+    '169',
+    '209',
+    '249',
+    '12'
+),(
+    11,
+    4,
+    'Columbia',
+    'Krotkie spodenki',
+    'Letnie spodenki, rozmiar S',
+    '180',
+    '199',
+    '219',
+    '229',
+    '5'
+),(
+    12,
+    4,
+    'Columbia',
+    'Klapki',
+    'Czarne klapki, rozmiar 37',
+    '110',
+    '119',
+    '120',
+    '129',
+    '3'
+),(
+    13,
+    4,
+    'Columbia',
+    'Bluza',
+    'Bluza rozpianana z kieszeniami, rozmiar L',
+    '200',
+    '215',
+    '230',
+    '279',
+    '8.5'
+),(
+    14,
+    2,
+    'Nike',
+    'Koszula',
+    'Damska koszula z guzikami, rozmiar S',
+    '140',
+    '165',
+    '180',
+    '219',
+    '6'
+),(
+    15,
+    2,
+    'Nike',
+    'T-Shirt',
+    'T-Shirt, kolor bialy, rozmiar M',
+    '100',
+    '119',
+    '200',
+    '249',
+    '4'
+),(
+    16,
+    4,
+    'Columbia',
+    'Spodnie',
+    'Dlugie spodnie, rozmiar M',
+    '230',
+    '240',
+    '269',
+    '275',
+    '2'
+),(
+    17,
+    1,
+    'Adidas',
+    'Kurtka letnia',
+    'Lekka kurtka z kapturem, rozmiar XL',
+    '160',
+    '210',
+    '250',
+    '289',
+    '6'
+),(
+    18,
+    2,
+    'Salomon',
+    'Skapetki',
+    'Krotkie skarpetki, 3 szt., rozmiar 41',
+    '20',
+    '29',
+    '30',
+    '38',
+    '3'
+),(
+    19,
+    1,
+    'Adidas',
+    'Spodnica',
+    'Spodnica z kieszeniami i zamkiem',
+    '80',
+    '119',
+    '130',
+    '159',
+    '9'
+),(
+    20,
+    3,
+    'Salomon',
+    'Sweter',
+    'Rozpinany sweter ze wzorem, rozmiar S',
+    '170',
+    '189',
+    '210',
+    '263',
+    '11'
+);
+
+--Tabela "Zamowienie" - 10 pozycji
+
+INSERT INTO Zamowienie(
+    ID_zamowienia,
+    Id_klienta,
+    Id_produktu,
+    Data_zamowienia
+)
+VALUES(1, 1, 20, '2019-01-07'),(2, 2, 19, '2019-01-07'),(3, 3, 14, '2021-03-05'),(4, 4, 16, '2020-11-21'),(5, 5, 15, '2019-12-12'),(6, 7, 13, '2020-02-24'),(7, 9, 12, '2020-07-05'),(8, 8, 18, '2020-04-14'),(9, 10, 4, '2021-02-08'),(10, 6, 14, '2020-06-23');
+
+
+--Tabela "Klient" - 10 pozycji
+
+INSERT INTO Klient(
+    Id_klienta,
+    Id_zamowienia,
+    Imie,
+    Nazwisko,
+    Adres
+)
+VALUES(
+    1,
+    1,
+    'Piotr',
+    'Nowak',
+    'Dudastrasse 5, Berlin'
+),(
+    2,
+    2,
+    'Aleksandra',
+    'Malarz',
+    'Ihnestrasse 63-73, Berlin'
+),(
+    3,
+    3,
+    'Karol',
+    'Kowalski',
+    'Garystrasse 81, Berlin'
+),(
+    4,
+    4,
+    'Sylwia',
+    'Terlecka',
+    'Warschauer Strasse 103, Berlin'
+),(
+    5,
+    5,
+    'Adam',
+    'Rogowski',
+    'Halessches Platz 1, Berlin'
+),(
+    6,
+    7,
+    'Monika',
+    'Nowakowska',
+    'Halessches Platz 1, Berlin'
+),(
+    7,
+    8,
+    'Tomasz',
+    'Kowalczyk',
+    'Gelferstrasse 31, Berlin'
+),(
+    8,
+    9,
+    'Joanna',
+    'Grzybowska',
+    'Schlossstrasse 7, Berlin'
+),(
+    9,
+    10,
+    'Maria',
+    'Wieniawska',
+    'Argentinische Allee 12, Berlin'
+),(
+    10,
+    6,
+    'Piotr',
+    'Rak',
+    'Wilmsersdorfer Starsse 14, Berlin'
+);
+
+-- 7. Połącz kolumny ze Sobą aby tabele ze sobą się Komunikowały. Klucze do tabel zostaly opisane w punktach 2., 3., 4., 5 przy tworzeniu tabel.
+
+-- 8. Wyświetl wszystkie produkty z wszystkimi danymi od dostawcy który znajduje się na pozycji 1 w tabeli „Dostawca”
+
+SELECT p.nazwa_produktu, d.Id_producenta, d.Nazwa_producenta, d.Adres_producenta, d.Nip_producenta, d.Data_podpisania_umowy_z_producentem
+FROM Produkt AS p JOIN Dostawca AS d on p.id_producenta=d.Id_producenta
+WHERE d.Id_producenta = 1;
+
+-- 9. Posortuj te produkty po Nazwie od A-Z
+
+SELECT p.nazwa_produktu, d.Id_producenta, d.Nazwa_producenta, d.Adres_producenta, d.Nip_producenta, d.Data_podpisania_umowy_z_producentem
+FROM Produkt AS p JOIN Dostawca AS d on p.id_producenta=d.Id_producenta
+WHERE d.Id_producenta = 1
+ORDER BY p.nazwa_produktu;
+
+-- 10. Wylicz średnią cenę za produktu od tego dostawcy
+SELECT AVG(p.cena_brutto_sprzedazy) AS 'srednia_cena_za_produkt'
+FROM Produkt AS p JOIN Dostawca AS d on p.id_producenta=d.Id_producenta
+WHERE d.Id_producenta = 1
+ORDER BY p.nazwa_produktu;
+
+-- 11. Wyświetl dwie grupy produktów tego dostawcy: ● Połowa najtańszych to grupa: „Tanie”, ● Pozostałe to grupa: „Drogie”.
+
+SELECT *  FROM (SELECT p.nazwa_produktu, d.Id_producenta, d.Nazwa_producenta, d.Adres_producenta, d.Nip_producenta, d.Data_podpisania_umowy_z_producentem, p.cena_brutto_sprzedazy, 'Tanie'
+FROM Produkt AS p JOIN Dostawca AS d on p.id_producenta=d.Id_producenta
+WHERE d.Id_producenta = 1 AND 
+(p.cena_brutto_sprzedazy < (SELECT AVG(pr.cena_brutto_sprzedazy) FROM Produkt AS pr WHERE pr.nazwa_producenta=d.Nazwa_producenta))
+UNION ALL
+SELECT p.nazwa_produktu, d.Id_producenta, d.Nazwa_producenta, d.Adres_producenta, d.Nip_producenta, d.Data_podpisania_umowy_z_producentem, p.cena_brutto_sprzedazy, 'Drogie'
+FROM Produkt AS p JOIN Dostawca AS d on p.id_producenta=d.Id_producenta
+WHERE d.Id_producenta = 1 AND 
+(p.cena_brutto_sprzedazy >= (SELECT AVG(pr.cena_brutto_sprzedazy) FROM Produkt AS pr WHERE pr.nazwa_producenta=d.Nazwa_producenta))) as result
+ORDER by result.cena_brutto_sprzedazy
+
+-- Najtansze to produkty z cena ponizej sredniej (347 zl)
+
+-- 12. Wyświetl produkty zamówione, wyświetlając nazwę,
+
+SELECT p.nazwa_produktu
+FROM Produkt AS p JOIN Zamowienie AS z on p.id_produktu = z.Id_produktu;
+
+-- 13. Wyświetl wszystkie produkty zamówione – ograniczając do wyświetlonych 5 pozycji
+
+SELECT p.nazwa_produktu
+FROM Produkt AS p JOIN Zamowienie AS z on p.id_produktu = z.Id_produktu
+LIMIT 5;
+
+-- 14. Policz wartość wszystkich zamówień
+SELECT SUM(p.cena_brutto_sprzedazy) AS 'wartosc_wszystkich zamowien' 
+FROM Zamowienie AS z JOIN Produkt AS p on z.Id_produktu=p.id_produktu;
+
+-- 15. Wyświetl wszystkie zamówienia wraz z produktami sortując je wg daty od najstarszego do najnowszego
+SELECT z.Id_zamowienia, p.nazwa_produktu, p.nazwa_producenta, z.Data_zamowienia
+FROM Zamowienie AS z JOIN Produkt AS p on z.Id_produktu=p.id_produktu
+ORDER BY z.Data_zamowienia;
+
+-- 16. Sprawdź czy w tabeli produkty masz uzupełnione wszystkie dane – wyświetl pozycje dla których brakuje danych
+
+SELECT *
+FROM Produkt AS p
+WHERE p.nazwa_producenta 		IS NULL 
+OR p.nazwa_produktu 		IS NULL
+OR p.opis_produktu 		IS NULL
+OR p.cena_netto_zakupu 		IS NULL
+OR p.cena_brutto_zakupu 		IS NULL
+OR p.cena_netto_sprzedazy 	IS NULL
+OR p.cena_brutto_sprzedazy 	IS NULL
+OR p.procent_VAT_sprzedazy 	IS NULL;
+
+-- 17. Wyświetl produkty najczęściej sprzedawane wraz z ich ceną
+SELECT COUNT(z.Id_zamowienia) AS najczesciej_sprzedane, z.Id_produktu, p.cena_brutto_sprzedazy, p.nazwa_produktu
+FROM Zamowienie AS z JOIN Produkt AS p ON z.Id_produktu=p.id_produktu
+GROUP BY z.Id_produktu
+ORDER BY COUNT(z.Id_zamowienia) DESC;
+
+-- 18. Znajdź dzień w którym najwięcej zostało złożonych zamówień
+SELECT max(result.liczba_zamowien) AS dzien_najwiecej_zamowien, result.data_zamowienia
+FROM(
+SELECT COUNT(z.Id_produktu) AS liczba_zamowien, z.Data_zamowienia AS data_zamowienia
+FROM Zamowienie AS z
+GROUP BY z.Data_zamowienia) AS result;
+
+
+
+
